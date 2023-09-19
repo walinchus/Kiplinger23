@@ -1,0 +1,76 @@
+---
+title: "Kiplinger23"
+author: "Lucia Walinchus"
+date: "2023-09-19"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+library(dplyr)
+library(tidyverse)
+library(lubridate)
+library(ggplot2)
+library(gganimate)
+library(gapminder)
+library(gifski)
+```
+
+## Filtering for our countries
+
+Our fellows today come from: 
+Croatia - Dr. Kristian Dosen, investigative reporter and a professor at University of Zagreb
+Czech Republic - Filip Rozanek, editor of Digizonecz
+India - Joseph Kootungal Jose, radio host for Entertainment Network Limited
+Pakistan - Naeem Akbar Sahoutara, reporter, Dawn
+Palestine - Haneen Baker, Head of English Department, An-Najah National University
+Nigeria - Aniekeme Finbarr Uklong, special assistant to the governor, Akwa Ibom State
+Vietnam - Tien Ahn Tuan Nguyen, head of visual desk, Dan Tri newspaper
+Lithuania - Martynas Vainutis, editor, UAB Kasko Group
+
+```{r}
+gapminder_filtered <- gapminder %>% 
+  filter(country=="Croatia"|
+         country=="Czech Republic"|
+         country=="India"|
+         country=="Pakistan"|
+         country=="Palestine"|
+         country=="Nigeria"|
+         country=="Vietnam"|
+         country=="Lithuania")
+```
+
+Summary of our data: 
+
+```{r}
+summary(gapminder_filtered)
+```
+#Simple chart: Population
+
+```{r}
+gapminder_filtered %>% 
+  filter(year==2007) %>% 
+ggplot( aes(x=country, y=pop, fill=country))+
+         geom_col()+
+  labs(title = "Population of Select Countries (2007)")
+```
+
+
+
+
+
+
+## Animated
+
+```{r}
+
+ggplot(gapminder_filtered, aes(gdpPercap, lifeExp, size = pop, colour = country)) +
+  geom_point(alpha = 0.7, show.legend = TRUE) +
+  scale_colour_manual(values = country_colors) +
+  scale_size(range = c(2, 12)) +
+  scale_x_log10() +
+  labs(title = 'Year: {frame_time}', x = 'GDP per capita', y = 'life expectancy') +
+  transition_time(year) +
+  ease_aes('linear')
+```
+
+Note that the `echo = FALSE` parameter was added to the code chunk to prevent printing of the R code that generated the plot.
